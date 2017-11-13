@@ -11,12 +11,10 @@
         "styles/main.scss"
       ],
       "main": true
-    },
-    "jquery.js": {
-      "bower": ["jquery-3.2.1.min"]
     }
   },
   "config": {
+    "useProxy": false,
     "devUrl": "http://example.dev"
   }
 }
