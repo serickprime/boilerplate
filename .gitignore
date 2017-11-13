@@ -4,7 +4,6 @@ dist
 bower_components
 node_modules
 npm-debug.log
-vendor
 
 # Dotenv
 .env
@@ -23,5 +22,4 @@ vendor/*
 *.log
 *.pdf
 *.sublime*
-node_modules/
 Thumbs.db

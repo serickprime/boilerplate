@@ -1,0 +1,19 @@
+{
+  "extends": "eslint:recommended",
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "no-debugger": 0,
+    "no-console": 0,
+    "new-cap": 0,
+    "strict": 0,
+    "no-underscore-dangle": 0,
+    "no-use-before-define": 0,
+    "quotes": [1, "single"],
+    "semi": [2, "never"],
+    "eol-last": 0
+  }
+}

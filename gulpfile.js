@@ -1,41 +1,42 @@
 // ## Globals
-var argv         = require('minimist')(process.argv.slice(2));
-var autoprefixer = require('gulp-autoprefixer');
-var browserSync  = require('browser-sync').create();
-var changed      = require('gulp-changed');
-var concat       = require('gulp-concat');
-var flatten      = require('gulp-flatten');
-var gulp         = require('gulp');
-var gulpif       = require('gulp-if');
-var imagemin     = require('gulp-imagemin');
-var jshint       = require('gulp-jshint');
-var lazypipe     = require('lazypipe');
-var less         = require('gulp-less');
-var merge        = require('merge-stream');
-var cssNano      = require('gulp-cssnano');
-var plumber      = require('gulp-plumber');
-var rev          = require('gulp-rev');
-var runSequence  = require('run-sequence');
-var sass         = require('gulp-sass');
-var sourcemaps   = require('gulp-sourcemaps');
-var uglify       = require('gulp-uglify');
+let argv         = require('minimist')(process.argv.slice(2));
+let autoprefixer = require('gulp-autoprefixer');
+let browserSync  = require('browser-sync').create();
+let changed      = require('gulp-changed');
+let concat       = require('gulp-concat');
+let flatten      = require('gulp-flatten');
+let gulp         = require('gulp');
+let gulpif       = require('gulp-if');
+let imagemin     = require('gulp-imagemin');
+let babel        = require('gulp-babel');
+let lazypipe     = require('lazypipe');
+let less         = require('gulp-less');
+let merge        = require('merge-stream');
+let cssNano      = require('gulp-cssnano');
+let plumber      = require('gulp-plumber');
+let rev          = require('gulp-rev');
+let runSequence  = require('run-sequence');
+let sass         = require('gulp-sass');
+let sourcemaps   = require('gulp-sourcemaps');
+let uglify       = require('gulp-uglify');
+let eslint       = require('gulp-eslint');
 
 // Подробнее: https://github.com/austinpray/asset-builder
-var manifest = require('asset-builder')('./assets/manifest.json');
+let manifest = require('asset-builder')('./assets/manifest.json');
 
 // `path` - Пути к статике
 // - `path.source` - Путь к исходникам. По умолчанию: `assets/`
 // - `path.dist` - Путь к собранной статике. По умолчанию: `dist/`
-var path = manifest.paths;
+let path = manifest.paths;
 
 // `config` - Здесь можно сохранить дополнительные настройки для использования в gulpfile
-var config = manifest.config || {};
+let config = manifest.config || {};
 
-var globs = manifest.globs;
-var project = manifest.getProjectGlobs();
+let globs = manifest.globs;
+let project = manifest.getProjectGlobs();
 
 // Опции для командной строки
-var enabled = {
+let enabled = {
   // Добавить хэши к статике для борьбы с кэшированием старых версий `--production`
   rev: argv.production,
   // Отключить source-maps `--production`
@@ -43,7 +44,7 @@ var enabled = {
   // Прервать процесс сборки при ошибке сборки стилей `--production`
   failStyleTask: argv.production,
   // Прервать процесс сборки при получении предупреждений JSHint `--production`
-  failJSHint: argv.production,
+  failESlint: argv.production,
   // Убрать debug-опции из js `--production`
   stripJSDebug: argv.production
 };
@@ -58,7 +59,7 @@ if ( config.useProxy ) {
 } else {
   // использовать для разработки dev-сервер BrowserSync
   config.BSOptions = {
-    server: ".",
+    server: '.',
     ghostMode: false,
     open: true,
     cors: true
@@ -66,10 +67,10 @@ if ( config.useProxy ) {
 }
 
 // Путь к манифесту собранной статики (для получения актуальных имён файлов с хэшами)
-var revManifest = path.dist + 'assets.json';
+let revManifest = path.dist + 'assets.json';
 
 // Обработка ошибок - выдавать лог ошибки вместо падений процесса сборки
-var onError = function(err) {
+let onError = function(err) {
   console.log(err.toString());
   this.emit('end');
 };
@@ -84,7 +85,7 @@ var onError = function(err) {
 //   .pipe(cssTasks('main.css')
 //   .pipe(gulp.dest(path.dist + 'styles'))
 // ```
-var cssTasks = function(filename) {
+let cssTasks = function(filename) {
   return lazypipe()
     .pipe(function() {
       return gulpif(!enabled.failStyleTask, plumber());
@@ -131,11 +132,12 @@ var cssTasks = function(filename) {
 //   .pipe(jsTasks('main.js')
 //   .pipe(gulp.dest(path.dist + 'scripts'))
 // ```
-var jsTasks = function(filename) {
+let jsTasks = function(filename) {
   return lazypipe()
     .pipe(function() {
       return gulpif(enabled.maps, sourcemaps.init());
     })
+    .pipe(babel)
     .pipe(concat, filename)
     .pipe(uglify, {
       compress: {
@@ -154,7 +156,7 @@ var jsTasks = function(filename) {
 
 // ### Процесс записи ревизий статики с хэшами в манифест
 // Подробнее: https://github.com/sindresorhus/gulp-rev
-var writeToManifest = function(directory) {
+let writeToManifest = function(directory) {
   return lazypipe()
     .pipe(gulp.dest, path.dist + directory)
     .pipe(browserSync.stream, {match: '**/*.{js,css}'})
@@ -171,9 +173,9 @@ var writeToManifest = function(directory) {
 // ### Стили
 // `gulp styles` - Компилирует, объединяет и оптимизирует CSS проекта и зависимостей Bower
 gulp.task('styles', ['wiredep'], function() {
-  var merged = merge();
+  let merged = merge();
   manifest.forEachDependency('css', function(dep) {
-    var cssTasksInstance = cssTasks(dep.name);
+    let cssTasksInstance = cssTasks(dep.name);
     if (!enabled.failStyleTask) {
       cssTasksInstance.on('error', function(err) {
         console.error(err.message);
@@ -190,8 +192,8 @@ gulp.task('styles', ['wiredep'], function() {
 
 // ### JS
 // `gulp scripts` - Компилирует, объединяет и оптимизирует JS проекта и зависимостей Bower
-gulp.task('scripts', ['jshint'], function() {
-  var merged = merge();
+gulp.task('scripts', ['eslint'], function() {
+  let merged = merge();
   manifest.forEachDependency('js', function(dep) {
     merged.add(
       gulp.src(dep.globs, {base: 'scripts'})
@@ -229,15 +231,12 @@ gulp.task('images', function() {
     .pipe(browserSync.stream());
 });
 
-// ### JSHint
-// `gulp jshint` - Линтинг JS и JSON файлов
-gulp.task('jshint', function() {
-  return gulp.src([
-    'bower.json', 'gulpfile.js'
-  ].concat(project.js))
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(gulpif(enabled.failJSHint, jshint.reporter('fail')));
+// ### ESLint
+// `gulp eslint` - Линтинг JS и JSON файлов
+gulp.task('eslint', function() {
+  return gulp.src(project.js)
+    .pipe(eslint())
+    .pipe(eslint.format())
 });
 
 // ### Чистка
@@ -251,7 +250,7 @@ gulp.task('clean', require('del').bind(null, [path.dist]));
 gulp.task('watch', function() {
   browserSync.init(config.BSOptions);
   gulp.watch([path.source + 'styles/**/*'], ['styles']);
-  gulp.watch([path.source + 'scripts/**/*'], ['jshint', 'scripts']);
+  gulp.watch([path.source + 'scripts/**/*'], ['eslint', 'scripts']);
   gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
   gulp.watch([path.source + 'images/**/*'], ['images']);
   gulp.watch(['bower.json', 'assets/manifest.json'], ['build']);
@@ -272,7 +271,7 @@ gulp.task('build', function(callback) {
 // `gulp wiredep` - Автоматически добавляет зависимости Bower в CSS и JS
 // https://github.com/taptapship/wiredep
 gulp.task('wiredep', function() {
-  var wiredep = require('wiredep').stream;
+  let wiredep = require('wiredep').stream;
   return gulp.src(project.css)
     .pipe(wiredep())
     .pipe(changed(path.source + 'styles', {
