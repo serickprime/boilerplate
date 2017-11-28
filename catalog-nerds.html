@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <html class="no-js" lang="ru">
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      <title>Nerds-catalog</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+      <link rel="stylesheet" href="dist/styles/catalog-nerds-style.css">
+</head>
+<body>
+  <header class="main-header">
+    <div class="container">
+      <div class="logo">
+        <img src="assets/images/logo.png" alt="logo" width="320" height="240">
+      </div>
+      <nav class="main-navigation">
+        <ul>
+          <li><a href="#">студия</a></li>
+          <li><a href="#">клиенты</a></li>
+          <li><a href="#">магазин</a></li>
+          <li><a href="#">контакты</a></li>
+        </ul>
+      </nav>
+      <div class="basket">
+        <a href="#">корзина</a>
+      </div>
+    </div>
+    <div class="container">
+      <h1>
+        Добро пожаловать в магазин готовых макетов
+      </h1>
+    </div>
+  </header>
+  <div class="main">
+    <div class="filter-menu">
+      <div class="price">
+        <form id="price-form">Стоимость:</form>
+        От<input type="text" name="price" value="" placeholder="0" form="price-form">
+        До<input type="text" name="price" value="" placeholder="15000" form="price-form">
+      </div>
+        <div class="grid">
+          <form id="grid-form">Сетка:</form>
+          <input type="radio" name="grid-radio" value="adaptive" form="grid-form" checked>Адаптивная
+          <input type="radio" name="grid-radio" value="fixed" form="grid-form">Фиксированная
+          <input type="radio" name="grid-radio" value="ruber" form="grid-form">Резиновая
+        </div>
+        <div class="features">
+          <form id="features-form">Особенности:</form>
+          <input type="checkbox" name="features-checkbox" value="Слайдер" form="features-form" checked>Слайдер
+          <input type="checkbox" name="features-checkbox" value="Блок преимуществ" form="features-form">Блок преимуществ
+          <input type="checkbox" name="features-checkbox" value="Новости" form="features-form" checked>Новости
+          <input type="checkbox" name="features-checkbox" value="Галерея" form="features-form">Галерея
+          <input type="checkbox" name="features-checkbox" value="Корзина" form="features-form">Корзина
+        </div>
+        <a href="#" class="btn">Показать</a>
+      </div>
+    </div>
+</body>
+</html>
