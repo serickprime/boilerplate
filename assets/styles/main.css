@@ -1,0 +1,38 @@
+
+body {
+  min-width: 1122px;
+  min-height: 1750px;
+  margin: 0;
+  padding: 0;
+}
+.main-header {
+  width: inherit;
+  margin: 0 auto;
+  background-color: #eeeeee;
+  background-size:auto;
+}
+
+.container {
+  width: 940px;
+  margin: 0 auto;
+  padding-left: 160px;
+  padding-right: 160px;
+}
+.main-navigation {
+  margin-top: -15px;
+  padding-top: 40px;
+}
+.main-navigation>ul>li {
+  display: inline;
+  margin-left: 45px;
+}
+.main-navigation>img {
+  float: left;
+  margin-left: 40px;
+}
+/*распорка!*/
+.main-navigation::after{
+  display: table;
+  clear: both;
+  content: "";
+}
