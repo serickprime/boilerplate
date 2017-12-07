@@ -4,6 +4,7 @@ body {
   min-height: 1750px;
   margin: 0;
   padding: 0;
+  font-family: 'Roboto medium', sans-serif;
 }
 .main-header {
   width: inherit;
@@ -24,14 +25,49 @@ body {
 }
 .main-navigation>ul>li {
   display: inline;
-  margin-left: 45px;
+  margin-left: 43px;
+}
+.main-navigation>ul>li:last-child {
+  margin-left: 78px;
+}
+.main-navigation a {
+  text-decoration: none;
+  font-size: 14px;
+  text-transform: uppercase;
 }
 .main-navigation>img {
   float: left;
   margin-left: 40px;
+  margin-right: 140px;
 }
 /*распорка!*/
 .main-navigation::after{
+  display: table;
+  clear: both;
+  content: "";
+}
+.secondary-header-left {
+  float: left;
+  width: 365px;
+  margin-top: 90px;
+  margin-left: 40px;
+  padding-bottom: 110px;
+}
+.features-name {
+  font-size: 36px;
+  line-height: 36px;
+}
+.secondary-header-left>p {
+  font-size: 16px;
+  line-height: 22px;
+  color: #283136;
+}
+.secondary-header-right {
+  float: right;
+  width: 360px;
+  margin-top: 65px;
+}
+.secondary-header::after{
   display: table;
   clear: both;
   content: "";
